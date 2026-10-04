@@ -1,0 +1,24 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block titulo %}BiblioTech{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'catalogo/css/estilos.css' %}">
+</head>
+<body>
+  {% include 'catalogo/includes/topbar.html' %}
+  <main class="site-main">
+    {% if messages %}
+      <ul class="mensajes">
+        {% for message in messages %}
+          <li class="{{ message.tags }}">{{ message }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+    {% block contenido %}{% endblock %}
+  </main>
+  {% include 'catalogo/includes/footer.html' %}
+</body>
+</html>

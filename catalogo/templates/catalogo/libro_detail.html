@@ -1,0 +1,49 @@
+{% extends 'catalogo/base.html' %}
+{% block titulo %}{{ libro.titulo }}{% endblock %}
+{% block contenido %}
+  <div class="ficha-libro">
+    {% if libro.imagen_url %}
+      <img src="{{ libro.imagen_url }}" alt="{{ libro.titulo }}" class="portada">
+    {% else %}
+      <div class="portada-vacia portada-detalle" aria-label="Sin portada disponible">
+        <span>{{ libro.titulo|truncatechars:24 }}</span>
+      </div>
+    {% endif %}
+    <div class="info-libro">
+      <p><strong>Título:</strong> {{ libro.titulo }}</p>
+      <p><strong>Autor:</strong> {{ libro.autor.nombre }}</p>
+      <p><strong>Año:</strong> {{ libro.anio }}</p>
+      <p><strong>Ejemplares disponibles:</strong> {{ libro.ejemplares_disponibles }}</p>
+      {% if libro.descripcion %}<p class="descripcion-libro">{{ libro.descripcion }}</p>{% endif %}
+    </div>
+  </div>
+
+  <div class="caja-prestamo">
+    <h3>Solicitar préstamo</h3>
+    <p>Completa la solicitud para pedir prestado este libro.</p>
+    {% if user.is_authenticated %}
+      {% if libro.ejemplares_disponibles > 0 %}
+        <label class="solicitante-label">Nombre del solicitante</label>
+        <form method="post" action="{% url 'catalogo:solicitar' libro.pk %}">
+          {% csrf_token %}
+          <div class="campo-solicitante">
+            <span aria-hidden="true">♙</span>
+            <input type="text" value="{{ user.get_full_name|default:user.username }}" readonly aria-label="Nombre del solicitante">
+          </div>
+          <button type="submit">Solicitar préstamo</button>
+        </form>
+      {% else %}
+        <p>No quedan ejemplares disponibles.</p>
+      {% endif %}
+    {% else %}
+      <p><a href="{% url 'login' %}?next={{ request.path }}">Inicia sesión</a> para solicitar un préstamo.</p>
+    {% endif %}
+  </div>
+
+  {% if user.is_staff %}
+    <div class="acciones">
+      <a href="{% url 'catalogo:editar' libro.pk %}" class="boton">Editar</a>
+      <a href="{% url 'catalogo:eliminar' libro.pk %}" class="boton boton-peligro">Eliminar</a>
+    </div>
+  {% endif %}
+{% endblock %}

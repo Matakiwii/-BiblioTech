@@ -1,0 +1,42 @@
+{% extends 'catalogo/base.html' %}
+{% block titulo %}BiblioTech{% endblock %}
+{% block contenido %}
+  <section class="hero">
+    <img src="https://images.unsplash.com/photo-1564399579883-451a5d44ec08?w=1100"
+         alt="Biblioteca" class="hero-img">
+    <div class="hero-copy">
+      <h1>Un libro, nuevos mundos.</h1>
+      <p class="hero-texto">
+        Somos un nuevo sistema de biblioteca hecho desde cero, donde
+        puedes encontrar todos los libros de la biblioteca a solo
+        unos clics de distancia.
+      </p>
+      <a href="{% url 'catalogo:buscar' %}" class="hero-link">Explorar catálogo</a>
+    </div>
+  </section>
+
+  <div class="seccion-titulo">
+    <h2>Los más pedidos del mes</h2>
+    <a href="{% url 'catalogo:buscar' %}">Ver catálogo</a>
+  </div>
+  <div class="grid-libros">
+    {% for libro in libros_destacados %}
+      <article class="tarjeta-libro">
+        <a href="{% url 'catalogo:detalle' libro.pk %}" class="portada-link">
+        {% if libro.imagen_url %}
+          <img src="{{ libro.imagen_url }}" alt="{{ libro.titulo }}">
+        {% else %}
+          <div class="portada-vacia" aria-label="Sin portada disponible">
+            <span>{{ libro.titulo|truncatechars:24 }}</span>
+          </div>
+        {% endif %}
+        </a>
+        <h3>{{ libro.titulo }}</h3>
+        <p class="autor">{{ libro.autor.nombre }}</p>
+        <a href="{% url 'catalogo:detalle' libro.pk %}" class="btn-ver">Ver libro</a>
+      </article>
+    {% empty %}
+      <p>Todavía no hay libros destacados.</p>
+    {% endfor %}
+  </div>
+{% endblock %}

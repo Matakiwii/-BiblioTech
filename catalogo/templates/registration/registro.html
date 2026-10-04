@@ -1,0 +1,15 @@
+{% extends 'catalogo/base.html' %}
+{% block titulo %}Crear cuenta{% endblock %}
+{% block contenido %}
+  <div class="modal-login">
+    <h2>Crear cuenta</h2>
+    <form method="post" class="formulario">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit">Registrarme</button>
+    </form>
+    <p class="link-secundario">
+      ¿Ya tienes cuenta? <a href="{% url 'login' %}">Inicia sesión</a>
+    </p>
+  </div>
+{% endblock %}

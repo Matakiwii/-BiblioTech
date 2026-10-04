@@ -1,0 +1,33 @@
+<header class="topbar">
+  <a href="{% url 'catalogo:portada' %}" class="logo">BIBLIOTECH</a>
+  <div class="topbar-iconos">
+    <a href="{% url 'catalogo:buscar' %}" title="Buscar libros" aria-label="Buscar libros" class="icon-link">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="10.8" cy="10.8" r="6.8"></circle>
+        <path d="m16 16 5 5"></path>
+      </svg>
+    </a>
+    {% if user.is_authenticated %}
+      <a href="{% url 'catalogo:perfil' %}" title="Mi perfil" aria-label="Mi perfil" class="icon-link">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="8" r="3.4"></circle>
+          <path d="M4.5 20c.7-4 3.1-6 7.5-6s6.8 2 7.5 6"></path>
+          <circle cx="12" cy="12" r="10"></circle>
+        </svg>
+        <span class="usuario-topbar">{{ user.username }}</span>
+      </a>
+      <form method="post" action="{% url 'logout' %}" class="form-logout">
+        {% csrf_token %}
+        <button type="submit">Salir</button>
+      </form>
+    {% else %}
+      <a href="{% url 'login' %}" title="Iniciar sesión" aria-label="Iniciar sesión" class="icon-link">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="12" r="10"></circle>
+          <circle cx="12" cy="8.5" r="3"></circle>
+          <path d="M5.5 19c.8-3.2 3-4.8 6.5-4.8s5.7 1.6 6.5 4.8"></path>
+        </svg>
+      </a>
+    {% endif %}
+  </div>
+</header>

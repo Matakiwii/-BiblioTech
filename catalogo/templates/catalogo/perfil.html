@@ -1,0 +1,42 @@
+{% extends 'catalogo/base.html' %}
+{% block titulo %}Mi perfil{% endblock %}
+{% block contenido %}
+  <div class="tarjeta-perfil">
+    <div class="avatar" aria-hidden="true">
+      <svg viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="10"></circle>
+        <circle cx="12" cy="8.5" r="3"></circle>
+        <path d="M5.5 19c.8-3.2 3-4.8 6.5-4.8s5.7 1.6 6.5 4.8"></path>
+      </svg>
+    </div>
+    <div class="perfil-info">
+      <p>Cuenta creada la fecha {{ user.date_joined|date:"d/m/Y" }}</p>
+      <p class="perfil-nombre">{{ user.get_full_name|default:user.username }}</p>
+    </div>
+  </div>
+
+  <form method="get" class="form-buscador perfil-buscador">
+    <input type="search" name="q" value="{{ q }}" placeholder="Buscar mis libros" aria-label="Buscar mis libros">
+    <button type="submit" aria-label="Buscar">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="10.8" cy="10.8" r="6.8"></circle>
+        <path d="m16 16 5 5"></path>
+      </svg>
+    </button>
+  </form>
+
+  <div class="seccion-titulo">
+    <h2>Mis préstamos</h2>
+  </div>
+  <div class="lista-prestamos">
+    {% for prestamo in prestamos %}
+      <article class="fila-prestamo">
+        <strong>{{ prestamo.libro.titulo }}</strong>
+        <span>{{ prestamo.fecha_solicitud|date:"d/m/Y" }}</span>
+        <span>{% if prestamo.devuelto %}Devuelto{% else %}En préstamo{% endif %}</span>
+      </article>
+    {% empty %}
+      <p>Todavía no has solicitado ningún préstamo.</p>
+    {% endfor %}
+  </div>
+{% endblock %}

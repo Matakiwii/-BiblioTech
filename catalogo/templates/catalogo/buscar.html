@@ -1,0 +1,43 @@
+{% extends 'catalogo/base.html' %}
+{% block titulo %}Buscar libros{% endblock %}
+{% block contenido %}
+  <section class="busqueda-panel">
+    <h1>Buscador</h1>
+    <form method="get" class="form-buscador">
+      <input type="search" name="q" value="{{ q }}"
+             placeholder="Buscar por título o autor" aria-label="Buscar por título o autor">
+      <button type="submit" aria-label="Buscar">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="10.8" cy="10.8" r="6.8"></circle>
+          <path d="m16 16 5 5"></path>
+        </svg>
+      </button>
+    </form>
+  </section>
+
+  {% if q %}
+    <div class="seccion-titulo resultados-titulo">
+      <h2>Resultados para “{{ q }}”</h2>
+    </div>
+  {% endif %}
+  <div class="grid-libros">
+    {% for libro in libros %}
+      <article class="tarjeta-libro">
+        <a href="{% url 'catalogo:detalle' libro.pk %}" class="portada-link">
+        {% if libro.imagen_url %}
+          <img src="{{ libro.imagen_url }}" alt="{{ libro.titulo }}">
+        {% else %}
+          <div class="portada-vacia" aria-label="Sin portada disponible">
+            <span>{{ libro.titulo|truncatechars:24 }}</span>
+          </div>
+        {% endif %}
+        </a>
+        <h3>{{ libro.titulo }}</h3>
+        <p class="autor">{{ libro.autor.nombre }}</p>
+        <a href="{% url 'catalogo:detalle' libro.pk %}" class="btn-ver">Ver libro</a>
+      </article>
+    {% empty %}
+      <p>No se encontraron libros.</p>
+    {% endfor %}
+  </div>
+{% endblock %}
