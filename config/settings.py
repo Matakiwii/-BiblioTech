@@ -79,23 +79,37 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'biblioteca_django',
-        'USER': os.environ.get('BIBLIOTECA_DB_USER', 'root'),
-        'PASSWORD': os.environ.get('BIBLIOTECA_DB_PASSWORD', ''),
-        'HOST': os.environ.get('BIBLIOTECA_DB_HOST', 'localhost'),
-        'PORT': os.environ.get('BIBLIOTECA_DB_PORT', '3306'),
-        'OPTIONS': {
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+DATABASE_ENGINE = os.environ.get('BIBLIOTECA_DB_ENGINE', 'sqlite').lower()
+
+if DATABASE_ENGINE == 'sqlite':
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
         },
     }
-}
-
-if not DATABASES['default']['PASSWORD']:
+elif DATABASE_ENGINE == 'mysql':
+    database_password = os.environ.get('BIBLIOTECA_DB_PASSWORD', '')
+    if not database_password:
+        raise ImproperlyConfigured(
+            'Define BIBLIOTECA_DB_PASSWORD para usar MySQL.'
+        )
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': 'biblioteca_django',
+            'USER': os.environ.get('BIBLIOTECA_DB_USER', 'root'),
+            'PASSWORD': database_password,
+            'HOST': os.environ.get('BIBLIOTECA_DB_HOST', 'localhost'),
+            'PORT': os.environ.get('BIBLIOTECA_DB_PORT', '3306'),
+            'OPTIONS': {
+                'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+            },
+        }
+    }
+else:
     raise ImproperlyConfigured(
-        'Define BIBLIOTECA_DB_PASSWORD en tu entorno antes de usar Django.'
+        'BIBLIOTECA_DB_ENGINE debe ser "sqlite" o "mysql".'
     )
 
 

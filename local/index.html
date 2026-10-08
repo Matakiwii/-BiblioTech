@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#68165d">
+  <title>BiblioTech local</title>
+  <link rel="stylesheet" href="../catalogo/static/catalogo/css/estilos.css">
+  <link rel="stylesheet" href="local.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <a href="#inicio" class="logo">BIBLIOTECH</a>
+    <nav class="topbar-iconos" aria-label="Navegación principal">
+      <a href="#catalogo" class="icon-link">Catálogo</a>
+      <span id="nav-user"></span>
+    </nav>
+  </header>
+  <main class="site-main">
+    <div id="notice" class="notice" role="status" aria-live="polite" hidden></div>
+    <div id="app" aria-live="polite">
+      <p class="loading">Cargando biblioteca local…</p>
+    </div>
+  </main>
+  <footer class="site-footer">
+    <p>BiblioTech local · Los datos se guardan en este navegador.</p>
+  </footer>
+</body>
+</html>

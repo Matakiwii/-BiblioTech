@@ -67,18 +67,43 @@ class LibroDetailView(DetailView):
     def get_queryset(self):
         return Libro.objects.filter(publicado=True).select_related('autor')
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['tiene_atrasos'] = (
+            self.request.user.is_authenticated
+            and Prestamo.usuario_tiene_atrasos(self.request.user)
+        )
+        return context
+
 
 @login_required
 @require_POST
 def solicitar_prestamo(request, pk):
     libro = get_object_or_404(Libro, pk=pk, publicado=True)
+    tipo = request.POST.get('tipo', Prestamo.TipoPrestamo.NORMAL)
+    if tipo not in Prestamo.TipoPrestamo.values:
+        messages.error(request, 'Selecciona un tipo de préstamo válido.')
+        return redirect('catalogo:detalle', pk=libro.pk)
+
+    if Prestamo.usuario_tiene_atrasos(request.user):
+        messages.error(
+            request,
+            'No puedes solicitar préstamos mientras tengas un libro atrasado. '
+            'Devuelve el libro pendiente para volver a solicitar.',
+        )
+        return redirect('catalogo:detalle', pk=libro.pk)
+
     with transaction.atomic():
         ejemplares_actualizados = Libro.objects.filter(
             pk=libro.pk,
             ejemplares_disponibles__gt=0,
         ).update(ejemplares_disponibles=F('ejemplares_disponibles') - 1)
         if ejemplares_actualizados:
-            Prestamo.objects.create(libro=libro, usuario=request.user)
+            Prestamo.objects.create(
+                libro=libro,
+                usuario=request.user,
+                tipo=tipo,
+            )
             messages.success(request, 'Solicitud de préstamo registrada.')
         else:
             messages.error(request, 'No quedan ejemplares disponibles.')
@@ -114,6 +139,7 @@ def perfil(request):
     return render(request, 'catalogo/perfil.html', {
         'prestamos': prestamos,
         'q': query,
+        'tiene_atrasos': Prestamo.usuario_tiene_atrasos(request.user),
     })
 
 

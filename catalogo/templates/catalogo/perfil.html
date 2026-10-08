@@ -15,6 +15,10 @@
     </div>
   </div>
 
+  {% if tiene_atrasos %}
+    <p class="aviso-atraso">Tienes un préstamo atrasado. Devuélvelo para poder solicitar otro.</p>
+  {% endif %}
+
   <form method="get" class="form-buscador perfil-buscador">
     <input type="search" name="q" value="{{ q }}" placeholder="Buscar mis libros" aria-label="Buscar mis libros">
     <button type="submit" aria-label="Buscar">
@@ -32,8 +36,14 @@
     {% for prestamo in prestamos %}
       <article class="fila-prestamo">
         <strong>{{ prestamo.libro.titulo }}</strong>
-        <span>{{ prestamo.fecha_solicitud|date:"d/m/Y" }}</span>
-        <span>{% if prestamo.devuelto %}Devuelto{% else %}En préstamo{% endif %}</span>
+        <span>{{ prestamo.get_tipo_display }}</span>
+        <span>Solicitado: {{ prestamo.fecha_solicitud|date:"d/m/Y H:i" }}</span>
+        <span>Vence: {{ prestamo.fecha_vencimiento|date:"d/m/Y H:i" }}</span>
+        <span>
+          {% if prestamo.devuelto %}Devuelto
+          {% elif prestamo.vencido %}Atrasado
+          {% else %}En préstamo{% endif %}
+        </span>
       </article>
     {% empty %}
       <p>Todavía no has solicitado ningún préstamo.</p>

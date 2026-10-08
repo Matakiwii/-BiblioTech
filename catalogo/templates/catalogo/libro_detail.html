@@ -22,7 +22,9 @@
     <h3>Solicitar préstamo</h3>
     <p>Completa la solicitud para pedir prestado este libro.</p>
     {% if user.is_authenticated %}
-      {% if libro.ejemplares_disponibles > 0 %}
+      {% if tiene_atrasos %}
+        <p class="aviso-atraso">Tienes un libro atrasado. Devuélvelo para poder solicitar otro préstamo.</p>
+      {% elif libro.ejemplares_disponibles > 0 %}
         <label class="solicitante-label">Nombre del solicitante</label>
         <form method="post" action="{% url 'catalogo:solicitar' libro.pk %}">
           {% csrf_token %}
@@ -30,6 +32,12 @@
             <span aria-hidden="true">♙</span>
             <input type="text" value="{{ user.get_full_name|default:user.username }}" readonly aria-label="Nombre del solicitante">
           </div>
+          <label class="solicitante-label" for="tipo-prestamo">Tipo de préstamo</label>
+          <select class="selector-prestamo" id="tipo-prestamo" name="tipo" required>
+            <option value="normal">Normal (7 días, puede salir del recinto)</option>
+            <option value="reserva">Reserva (2 horas, solo dentro del recinto)</option>
+          </select>
+          <p class="aviso-reserva">El préstamo de reserva es solo para consulta dentro de la biblioteca; el libro no puede salir del recinto.</p>
           <button type="submit">Solicitar préstamo</button>
         </form>
       {% else %}

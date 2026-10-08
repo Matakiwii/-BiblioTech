@@ -375,6 +375,30 @@ a {
   font-size: 11px;
 }
 
+.selector-prestamo {
+  width: 100%;
+  min-height: 36px;
+  padding: 7px 9px;
+  border: 1px solid #75848b;
+  border-radius: 5px;
+  background: #fff;
+  color: var(--texto);
+  font: inherit;
+  font-size: 11px;
+}
+
+.aviso-reserva {
+  margin-top: 8px;
+  color: #42484a;
+  font-size: 11px;
+}
+
+.aviso-atraso {
+  margin-top: 8px;
+  color: #7b2929;
+  font-size: 11px;
+}
+
 .caja-prestamo button,
 .formulario button,
 .boton,
